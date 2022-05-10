@@ -1,7 +1,9 @@
 rootProject.name = 'BrickPlaceholders'
 
-include (
-        'api',
-        'app'
-)
+include 'api'
+include 'common'
+include 'minestom-api'
+include 'minestom'
+include 'spigot-api'
+include 'spigot'
 

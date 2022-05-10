@@ -1,0 +1,5 @@
+name: 'BrickPlaceholders'
+author: 'GufliMC'
+version: ${pluginVersion}
+main: com.guflimc.brick.placeholders.spigot.SpigotBrickPlaceholders
+api-version: 1.13

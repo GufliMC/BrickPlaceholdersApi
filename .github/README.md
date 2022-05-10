@@ -1,13 +1,19 @@
 # BrickPlaceholders
 
-An extension for [Minestom](https://github.com/Minestom/Minestom) with an api for placeholders.
+A Minecraft library for handling placeholders by various plugins/extensions.
+
+## Platforms
+
+* [x] Minestom
+* [x] Spigot / Paper
 
 ## Install
 
-Get the [release](https://github.com/MinestomBrick/BrickPlaceholders/releases)
-and place it in the extension folder of your minestom server.
+Get the latest [release](https://github.com/GufliMC/BrickPlaceholders/releases) and place it in your server.
 
 ## Usage
+
+### Gradle
 
 ```
 repositories {
@@ -15,18 +21,28 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.minestombrick.placeholders:api:1.0-SNAPSHOT'
+    // minestom
+    compileOnly 'com.guflimc.brick.placeholders:minestom-api:1.0-SNAPSHOT'
+    
+    // spigot
+    compileOnly 'com.guflimc.brick.placeholders:spigot-api:1.0-SNAPSHOT'
 }
 ```
 
+### Javadocs
+
+* [Minestom](https://guflimc.github.io/BrickPlaceholders/minestom)
+* [Spigot](https://guflimc.github.io/BrickPlaceholders/spigot)
+
+
+### Examples
+
 ```java
-PlaceholderAPI.get().registerReplacer("level", (player) -> {
+SpigotPlaceholderAPI.get().registerReplacer("level", (player) -> {
     return Component.text(player.getLevel());
 });
 
-Component result = PlaceholderAPI.get().replace(player, text);
+Component result = SpigotPlaceholderAPI.get().replace(player, text);
 ```
-
-Check the [javadocs](https://minestombrick.github.io/BrickPlaceholders)
 
 
