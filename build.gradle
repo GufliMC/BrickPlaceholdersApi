@@ -1,11 +1,8 @@
-plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-}
 
 group 'com.guflimc.brick.placeholders'
 version '1.0-SNAPSHOT'
 
-allprojects {
+subprojects {
     apply plugin: 'java'
 
     sourceCompatibility = 1.17
@@ -24,22 +21,13 @@ allprojects {
     }
 
     dependencies {
-        implementation 'org.jetbrains:annotations:23.0.0'
-
+        compileOnly 'org.jetbrains:annotations:23.0.0'
         compileOnly 'net.kyori:adventure-api:4.10.1'
     }
 }
 
-
 configure(subprojects.findAll {it.name.contains('-api')}) {
-    apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'maven-publish'
-
-    shadowJar {
-        archiveClassifier.set("${project.name}")
-        archiveBaseName.set("${rootProject.name}")
-        archiveVersion.set("${rootProject.version}")
-    }
 
     publishing {
         repositories {
