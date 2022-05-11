@@ -1,10 +1,10 @@
 package com.guflimc.brick.placeholders.common;
 
+import com.guflimc.brick.placeholders.api.PlaceholderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
-import org.minestombrick.placeholders.api.PlaceholderManager;
 
 import java.util.Collection;
 import java.util.Collections;

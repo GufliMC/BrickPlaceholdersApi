@@ -1,7 +1,6 @@
 package com.guflimc.brick.placeholders.minestom;
 
 import com.guflimc.brick.placeholders.minestom.api.MinestomPlaceholderAPI;
-import com.guflimc.brick.placeholders.minestom.api.MinestomPlaceholderManager;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Player;
 import net.minestom.server.extensions.Extension;
@@ -12,7 +11,7 @@ public class MinestomBrickPlaceholders extends Extension {
     public void initialize() {
         getLogger().info("Enabling " + nameAndVersion() + ".");
 
-        MinestomPlaceholderAPI.registerManager(new MinestomPlaceholderManager());
+        MinestomPlaceholderAPI.registerManager(new MinestomStandardPlaceholderManager());
 
         // default placeholders
         MinestomPlaceholderAPI.get().registerReplacer("username", p -> Component.text(p.getUsername()));
