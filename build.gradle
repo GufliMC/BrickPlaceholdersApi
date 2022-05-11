@@ -1,69 +1,29 @@
 plugins {
-    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
 
 group 'com.guflimc.brick.placeholders'
 version '1.0-SNAPSHOT'
 
+def javadocProjects = [project(':spigot-api'), project(':minestom-api'), project(':api')]
+ext.set("javadocProjects", javadocProjects)
+
+def publishProjects = [project(':spigot-api'), project(':minestom-api')]
+ext.set("publishProjects", publishProjects)
+
 subprojects {
     apply plugin: 'java'
 
-    sourceCompatibility = 1.17
-    targetCompatibility = 1.17
-
-    group = this.group;
-    version = this.version;
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-
     repositories {
-        mavenCentral()
         maven { url 'https://repo.spongepowered.org/maven' }
     }
 
     dependencies {
-        compileOnly 'org.jetbrains:annotations:23.0.0'
         compileOnly 'net.kyori:adventure-api:4.10.1'
     }
 }
 
-configure(subprojects.findAll { it.name.contains('-api') }) {
-    apply plugin: 'maven-publish'
-
-    publishing {
-        repositories {
-            maven {
-                name = "Jorisg"
-                url = uri("https://repo.jorisg.com/snapshots")
-                credentials(org.gradle.api.credentials.PasswordCredentials)
-            }
-        }
-
-        publications {
-            release(MavenPublication) {
-                from components.java
-                groupId = rootProject.group
-                artifactId = project.name
-                version = rootProject.version
-            }
-        }
-    }
-
-    tasks.withType(Javadoc).all {
-        enabled = false
-    }
-}
-
-def javadocProjects = [
-        "api",
-        "minestom-api",
-        "spigot-api",
-]
-
-javadoc {
-    source javadocProjects.collect { project(it).sourceSets.main.allJava }
-    classpath = files(javadocProjects.collect { project(it).sourceSets.main.compileClasspath })
-    destinationDir = file("${buildDir}/docs/javadoc")
-}
+apply from: 'https://guflimc.github.io/scripts/gradle/subprojects-default.gradle'
+apply from: 'https://guflimc.github.io/scripts/gradle/subprojects-javadoc.gradle'
+apply from: 'https://guflimc.github.io/scripts/gradle/subprojects-shadow.gradle'
+apply from: 'https://guflimc.github.io/scripts/gradle/subprojects-publish-shadow.gradle'
