@@ -51,11 +51,9 @@ configure(subprojects.findAll { it.name.contains('-api') }) {
         }
     }
 
-//    javadoc {
-//        source project.sourceSets.main.compileClasspath //configurations.runtimeClasspath.collect { zipTree(it) }
-//        include '**/*.java'
-//        options.addStringOption('Xdoclint:none', '-quiet')
-//    }
+    tasks.withType(Javadoc).all {
+        enabled = false
+    }
 }
 
 def javadocProjects = [

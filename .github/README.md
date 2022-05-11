@@ -31,9 +31,7 @@ dependencies {
 
 ### Javadocs
 
-* [Minestom](https://guflimc.github.io/BrickPlaceholders/minestom-api)
-* [Spigot](https://guflimc.github.io/BrickPlaceholders/spigot-api)
-
+You can find the javadocs for all platforms [here](https://guflimc.github.io/BrickPlaceholders)
 
 ### Examples
 
