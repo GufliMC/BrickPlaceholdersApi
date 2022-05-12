@@ -1,3 +1,7 @@
+plugins {
+    id 'com.guflimc.minestom.extensionsetup' version '+'
+}
+
 repositories {
     maven { url 'https://jitpack.io' }
 }
@@ -7,4 +11,10 @@ dependencies {
     implementation project(':common')
     implementation project(':minestom-api')
 
-    compileOnly 'com.github.Minestom:Minestom:-SNAPSHOT'}
+    compileOnly 'com.github.Minestom:Minestom:-SNAPSHOT'
+}
+
+
+minestomExtension {
+    entrypoint = "com.guflimc.brick.placeholders.minestom.MinestomBrickPlaceholders"
+}

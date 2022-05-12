@@ -1,3 +1,7 @@
+plugins {
+    id 'net.minecrell.plugin-yml.bukkit' version '0.5.1'
+}
+
 repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 }
@@ -7,6 +11,20 @@ dependencies {
     implementation project(':common')
     implementation project(':spigot-api')
 
-    compileOnly 'net.kyori:adventure-text-serializer-legacy:4.10.1'
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+
+    // shade
+    implementation 'net.kyori:adventure-api:4.10.1'
 }
+
+
+bukkit {
+    name = rootProject.name
+    main = 'com.guflimc.brick.placeholders.spigot.SpigotBrickPlaceholders'
+    description = 'Simple and lightweight placeholder library for mc 1.18+'
+    author = 'GufliMC'
+    website = 'https://github.com/GufliMC/BrickPlaceholders'
+}
+
+// I want it nice like that
+generateBukkitPluginDescription.group = "minecraft"
