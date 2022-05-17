@@ -7,13 +7,14 @@ repositories {
 }
 
 dependencies {
+    // provided by platform
+    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+
+    // shadow
     implementation project(':api')
     implementation project(':common')
     implementation project(':spigot-api')
 
-    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
-
-    // shade
     implementation 'net.kyori:adventure-api:4.10.1'
     implementation 'net.kyori:adventure-text-serializer-legacy:4.10.1'
 }

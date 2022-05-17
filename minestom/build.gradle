@@ -7,11 +7,13 @@ repositories {
 }
 
 dependencies {
+    // provided by platform
+    compileOnly 'com.github.Minestom:Minestom:-SNAPSHOT'
+
+    // shadow
     implementation project(':api')
     implementation project(':common')
     implementation project(':minestom-api')
-
-    compileOnly 'com.github.Minestom:Minestom:-SNAPSHOT'
 }
 
 
