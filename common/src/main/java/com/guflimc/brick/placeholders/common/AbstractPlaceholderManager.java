@@ -37,7 +37,7 @@ public abstract class AbstractPlaceholderManager<T> implements PlaceholderManage
         String placeholder = group.substring(1, group.length()-1); // remove surrounding brackets
 
         if ( !replacers.containsKey(placeholder) ) {
-            return builder.append(Component.text(group));
+            return builder;
         }
 
         Component replacement = replacers.get(placeholder).apply(T, placeholder);
