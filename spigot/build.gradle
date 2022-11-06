@@ -26,6 +26,7 @@ bukkit {
     description = 'Simple and lightweight placeholder library for mc 1.18+'
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/BrickPlaceholders'
+    apiVersion = '1.18'
 }
 
 // I want it nice like that
