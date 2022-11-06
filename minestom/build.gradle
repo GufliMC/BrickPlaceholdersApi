@@ -21,10 +21,3 @@ minestomExtension {
     name = rootProject.name
     entrypoint = "com.guflimc.brick.placeholders.minestom.MinestomBrickPlaceholders"
 }
-
-shadowJar.doLast {
-    copy {
-        from "build/libs/" + archiveFileName.get()
-        into 'D:\\Documents\\testservers\\WollyMC\\lobby2\\extensions'
-    }
-}
