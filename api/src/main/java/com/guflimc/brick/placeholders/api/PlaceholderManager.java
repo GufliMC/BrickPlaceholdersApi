@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface PlaceholderManager<T> {
@@ -18,12 +17,20 @@ public interface PlaceholderManager<T> {
     Component replace(@NotNull T entity, @NotNull Component component);
 
     /**
-     * Replace placeholders in a component for the given player.
+     * Replace placeholders in a string for the given player.
      * @param entity for whom to replace placeholders
      * @param text to replace placeholders in
      * @return the component with placeholders replaced
      */
     Component replace(@NotNull T entity, @NotNull String text);
+
+    /**
+     * Return the replaced component for the given placeholder.
+     * @param entity for whom to replace placeholders.
+     * @param key the name of the placeholder to replace.
+     * @return the component that matches the given placeholder.
+     */
+    Component replacement(@NotNull T entity, @NotNull String key);
 
     /**
      * Get a list of registered placeholders.
@@ -33,17 +40,15 @@ public interface PlaceholderManager<T> {
 
     /**
      * Register a replacer function for a placeholder.
-     *
      * The function is in the following format: (entity, placeholder) -> component.
      *
      * @param key the placeholder for the replacer function
      * @param replacer the replacer function
      */
-    void registerReplacer(@NotNull String key, @NotNull BiFunction<T, String, Component> replacer);
+    void registerReplacer(@NotNull String key, @NotNull PlaceholderReplacer<T> replacer);
 
     /**
      * Register a replacer function for a placeholder.
-     *
      * The function is in the following format: (entity) -> component.
      *
      * @param key the placeholder for the replacer function

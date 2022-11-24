@@ -4,19 +4,23 @@ plugins {
 
 repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
 }
 
 dependencies {
-    // provided by platform
-    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
-
-    // shadow
     implementation project(':api')
     implementation project(':common')
     implementation project(':spigot-api')
 
-    implementation 'net.kyori:adventure-api:4.10.1'
-    implementation 'net.kyori:adventure-text-serializer-legacy:4.10.1'
+    // provided by platform
+    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
+
+    // plugins
+    compileOnly 'me.clip:placeholderapi:+'
+
+    // shadow
+    implementation 'net.kyori:adventure-api:4.+'
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.+'
 }
 
 
@@ -27,6 +31,7 @@ bukkit {
     author = 'GufliMC'
     website = 'https://github.com/GufliMC/BrickPlaceholders'
     apiVersion = '1.18'
+    softDepend = ["PlaceholderAPI"]
 }
 
 // I want it nice like that
