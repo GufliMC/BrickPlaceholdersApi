@@ -1,6 +1,6 @@
 package com.guflimc.brick.placeholders.spigot.placeholderapi;
 
-import com.guflimc.brick.placeholders.common.handler.PlaceholderHandler;
+import com.guflimc.brick.placeholders.api.extension.PlaceholderExtension;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -8,15 +8,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.regex.Pattern;
-
-public class PlaceholderAPIHandler implements PlaceholderHandler<Player> {
-
-    private final static Pattern PATTERN = Pattern.compile("(%[^%]+%)");
+public class PlaceholderAPIHandler implements PlaceholderExtension<Player> {
 
     @Override
-    public @NotNull Pattern pattern() {
-        return PATTERN;
+    public @NotNull String id() {
+        return "papi";
     }
 
     @Override
@@ -24,4 +20,5 @@ public class PlaceholderAPIHandler implements PlaceholderHandler<Player> {
         return LegacyComponentSerializer.legacySection()
                 .deserializeOrNull(PlaceholderAPI.setPlaceholders(entity, "%" + key + "%"));
     }
+
 }

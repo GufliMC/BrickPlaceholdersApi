@@ -1,30 +1,25 @@
 package com.guflimc.brick.placeholders.common;
 
 import com.guflimc.brick.placeholders.api.PlaceholderManager;
-import com.guflimc.brick.placeholders.api.PlaceholderReplacer;
-import com.guflimc.brick.placeholders.common.handler.PlaceholderHandler;
+import com.guflimc.brick.placeholders.api.extension.AdvancedPlaceholderExtension;
+import com.guflimc.brick.placeholders.api.extension.PlaceholderExtension;
+import com.guflimc.brick.placeholders.common.extension.BrickAdvancedPlaceholderExtension;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-public abstract class BrickPlaceholderManager<T> implements PlaceholderManager<T> {
+public class BrickPlaceholderManager<T> implements PlaceholderManager<T> {
 
     private final static Pattern PATTERN = Pattern.compile("(\\{[^}]+})");
 
-    private final BrickPlaceholderHandler<T> defaultHandler = new BrickPlaceholderHandler<>();
-    private final Set<PlaceholderHandler<T>> handlers = new HashSet<>();
-
-    protected BrickPlaceholderManager() {
-        registerHandler(defaultHandler);
-    }
+    private final Map<String, PlaceholderExtension<T>> extensions = new ConcurrentHashMap<>();
 
     @Override
     public Component replace(@NotNull T T, @NotNull String text) {
@@ -33,62 +28,54 @@ public abstract class BrickPlaceholderManager<T> implements PlaceholderManager<T
 
     @Override
     public Component replace(@NotNull T T, @NotNull Component component) {
-        for (PlaceholderHandler<T> handler : handlers) {
-            component = component.replaceText(builder -> builder.match(handler.pattern())
-                    .replacement((matchResult, textbuilder) -> replace(T, handler, matchResult, textbuilder)));
-        }
-
-//        return component.replaceText(builder -> builder.match(PATTERN)
-//                .replacement((matchResult, textbuilder) -> replace(T, defaultHandler, matchResult, textbuilder)));
-
-        return component;
+        return component.replaceText(builder -> builder.match(PATTERN)
+                .replacement((mr, tb) -> replace(T, mr)));
     }
 
-    private ComponentLike replace(T entity, PlaceholderHandler<T> handler, MatchResult match, TextComponent.Builder builder) {
+    private ComponentLike replace(T entity, MatchResult match) {
         String group = match.group().toLowerCase();
         String placeholder = group.substring(1, group.length() - 1); // remove surrounding brackets
-
-//        if (replacement == null) {
-//            return builder;
-//        }
-        return handler.replace(entity, placeholder);
+        return replacement(entity, placeholder);
     }
 
     //
 
     @Override
-    public Component replacement(@NotNull T entity, @NotNull String key) {
-        return defaultHandler.replace(entity, key);
-    }
+    public Component replacement(@NotNull T entity, @NotNull String placeholder) {
+        for (String id : extensions.keySet().stream().sorted(Comparator.reverseOrder()).toList()) {
+            if (!placeholder.startsWith(id)) {
+                continue;
+            }
 
-    @Override
-    public Collection<String> placeholders() {
-        return defaultHandler.placeholders();
-    }
+            String data = placeholder.substring(id.length());
+            if (data.startsWith("_")) {
+                data = data.substring(1);
+            }
 
-    @Override
-    public void registerReplacer(@NotNull String key, @NotNull PlaceholderReplacer<T> replacer) {
-        defaultHandler.registerReplacer(key, replacer);
-    }
-
-    @Override
-    public void registerReplacer(@NotNull String key, @NotNull Function<T, Component> replacer) {
-        defaultHandler.registerReplacer(key, replacer);
-    }
-
-    @Override
-    public void unregisterReplacer(@NotNull String key) {
-        defaultHandler.unregisterReplacer(key);
+            return extensions.get(id).replace(entity, data);
+        }
+        return null;
     }
 
     //
 
-    public void registerHandler(@NotNull PlaceholderHandler<T> handler) {
-        handlers.add(handler);
+    @Override
+    public void registerExtension(@NotNull PlaceholderExtension<T> extension) {
+        if (!extension.id().matches("[a-z0-9]+")) {
+            throw new IllegalArgumentException("Extension id may only contain lowercase letters and numbers.");
+        }
+        extensions.put(extension.id(), extension);
     }
 
-    public void unregisterHandler(@NotNull PlaceholderHandler<T> handler) {
-        handlers.remove(handler);
+    @Override
+    public AdvancedPlaceholderExtension<T> registerExtension(@NotNull String id) {
+        BrickAdvancedPlaceholderExtension<T> extension = new BrickAdvancedPlaceholderExtension<>(id);
+        registerExtension(extension);
+        return extension;
     }
 
+    @Override
+    public void unregisterExtension(@NotNull String id) {
+        extensions.remove(id);
+    }
 }

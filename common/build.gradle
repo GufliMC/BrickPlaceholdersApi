@@ -1,3 +1,14 @@
+
 dependencies {
     implementation project(":api")
+    implementation 'com.guflimc.brick.i18n:api:+'
+
+    testImplementation 'org.jetbrains:annotations:23.0.0'
+    testImplementation 'net.kyori:adventure-api:4.10.1'
+    testImplementation 'net.kyori:adventure-text-serializer-plain:4.10.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+test {
+    useJUnitPlatform()
 }

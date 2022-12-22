@@ -1,10 +1,9 @@
 package com.guflimc.brick.placeholders.api;
 
+import com.guflimc.brick.placeholders.api.extension.AdvancedPlaceholderExtension;
+import com.guflimc.brick.placeholders.api.extension.PlaceholderExtension;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
-import java.util.function.Function;
 
 public interface PlaceholderManager<T> {
 
@@ -27,39 +26,31 @@ public interface PlaceholderManager<T> {
     /**
      * Return the replaced component for the given placeholder.
      * @param entity for whom to replace placeholders.
-     * @param key the name of the placeholder to replace.
+     * @param placeholder the full name of the placeholder to replace.
      * @return the component that matches the given placeholder.
      */
-    Component replacement(@NotNull T entity, @NotNull String key);
+    Component replacement(@NotNull T entity, @NotNull String placeholder);
 
     /**
-     * Get a list of registered placeholders.
-     * @return a list of registered placeholders
-     */
-    Collection<String> placeholders();
-
-    /**
-     * Register a replacer function for a placeholder.
-     * The function is in the following format: (entity, placeholder) -> component.
+     * Register an extension that provides placeholders.
      *
-     * @param key the placeholder for the replacer function
-     * @param replacer the replacer function
+     * @param extension the extension to register
      */
-    void registerReplacer(@NotNull String key, @NotNull PlaceholderReplacer<T> replacer);
+    void registerExtension(@NotNull PlaceholderExtension<T> extension);
 
     /**
-     * Register a replacer function for a placeholder.
-     * The function is in the following format: (entity) -> component.
+     * Register an extension that provides placeholders.
+     * The extension will be of the {@link AdvancedPlaceholderExtension} type and will be created by this manager.
      *
-     * @param key the placeholder for the replacer function
-     * @param replacer the replacer function
+     * @param id the id of the extension
+     * @return the extension that was created
      */
-    void registerReplacer(@NotNull String key, @NotNull Function<T, Component> replacer);
+    AdvancedPlaceholderExtension<T> registerExtension(@NotNull String id);
 
     /**
-     * Unregister a placeholder.
-     * @param key the placeholder to unregister
+     * Unregister a placeholder extension
+     * @param id the id of the extension to unregister.
      */
-    void unregisterReplacer(@NotNull String key);
+    void unregisterExtension(@NotNull String id);
 
 }
