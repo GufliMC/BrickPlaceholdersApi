@@ -57,18 +57,18 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
 
     public void player() {
         BasePlaceholderModule<Player> module = new BasePlaceholderModule<>("player");
-        module.register("name", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().getName()));
-        module.register("displayname", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().getDisplayName()));
-        module.register("health", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().getHealth()));
-        module.register("level", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().getLevel()));
-        module.register("exp", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().getExp()));
-        module.register("food", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().getFoodLevel()));
-        module.register("is_flying", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().isFlying()));
-        module.register("is_sneaking", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().isSneaking()));
-        module.register("is_sprinting", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().isSprinting()));
-        module.register("is_op", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().isOp()));
-        module.register("is_invisible", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().isInvisible()));
-        module.register("is_invulnerable", PlaceholderResolver.withEntity((p, ctx) -> ctx.entity().isInvulnerable()));
+        module.register("name", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getName()));
+        module.register("displayname", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getDisplayName()));
+        module.register("health", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getHealth()));
+        module.register("level", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getLevel()));
+        module.register("exp", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getExp()));
+        module.register("food", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getFoodLevel()));
+        module.register("is_flying", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isFlying()));
+        module.register("is_sneaking", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isSneaking()));
+        module.register("is_sprinting", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isSprinting()));
+        module.register("is_op", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isOp()));
+        module.register("is_invisible", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isInvisible()));
+        module.register("is_invulnerable", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isInvulnerable()));
         manager.register(module);
     }
 

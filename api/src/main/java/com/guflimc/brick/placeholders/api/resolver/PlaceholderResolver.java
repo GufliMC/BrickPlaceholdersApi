@@ -16,7 +16,7 @@ public interface PlaceholderResolver<E, R> {
 
     //
 
-    static <E, R> PlaceholderResolver<E, R> withEntity(@NotNull PlaceholderResolver<E, R> resolver) {
+    static <E, R> PlaceholderResolver<E, R> requireEntity(@NotNull PlaceholderResolver<E, R> resolver) {
         return (placeholder, context) -> {
             if ( context.entity() == null ) {
                 return null;
@@ -25,9 +25,9 @@ public interface PlaceholderResolver<E, R> {
         };
     }
 
-    static <E, R> PlaceholderResolver<E, R> withEntityViewer(@NotNull PlaceholderResolver<E, R> resolver) {
+    static <E, R> PlaceholderResolver<E, R> requireViewer(@NotNull PlaceholderResolver<E, R> resolver) {
         return (placeholder, context) -> {
-            if ( context.entity() == null || context.viewer() == null ) {
+            if ( context.viewer() == null ) {
                 return null;
             }
             return resolver.resolve(placeholder, context);
