@@ -1,7 +1,6 @@
 
 dependencies {
     implementation project(":api")
-    implementation 'com.guflimc.brick.i18n:api:+'
 
     compileOnly 'org.slf4j:slf4j-api:1.7.36'
 

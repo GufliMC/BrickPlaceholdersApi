@@ -1,7 +1,7 @@
 package com.guflimc.brick.placeholders.spigot.placeholderapi;
 
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
-import com.guflimc.brick.placeholders.spigot.api.SpigotPlaceholderAPI;
+import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -43,14 +43,20 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(Player player, @NotNull String params) {
-        if ( player == null ) {
+        if (player == null) {
             return null;
         }
-        Component replacement = SpigotPlaceholderAPI.get().replace(params, player);
-        if ( replacement == null ) {
+
+        Object replacement = module.resolve(params, PlaceholderResolveContext.of(player));
+        if (replacement == null) {
             return null;
         }
-        return LegacyComponentSerializer.legacySection()
-                .serialize(replacement);
+
+        if (replacement instanceof Component result) {
+            return LegacyComponentSerializer.legacySection()
+                    .serialize(result);
+        }
+
+        return replacement.toString();
     }
 }
