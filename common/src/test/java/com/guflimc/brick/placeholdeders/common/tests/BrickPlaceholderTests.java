@@ -1,9 +1,10 @@
 package com.guflimc.brick.placeholdeders.common.tests;
 
 import com.guflimc.brick.placeholdeders.common.tests.model.Entity;
-import com.guflimc.brick.placeholdeders.common.tests.model.EntityNameExtension;
 import com.guflimc.brick.placeholders.api.PlaceholderManager;
-import com.guflimc.brick.placeholders.api.extension.AdvancedPlaceholderExtension;
+import com.guflimc.brick.placeholders.api.module.BasePlaceholderModule;
+import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
+import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolver;
 import com.guflimc.brick.placeholders.common.BrickPlaceholderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -29,30 +30,33 @@ public class BrickPlaceholderTests {
 
     @Test
     public void standardTest() {
-        manager.registerExtension(new EntityNameExtension());
+        BasePlaceholderModule<Entity> module = new BasePlaceholderModule<>("entity");
+        module.register("name", (placeholder, context) -> context.entity().name());
+        manager.register(module);
 
-        Component msg = manager.replace(entity, "Hello {entity_name}!");
+        Component msg = manager.replace("Hello %entity_name%!", entity);
         String result = PlainTextComponentSerializer.plainText().serialize(msg);
         assertEquals("Hello Berta!", result);
     }
 
     @Test
     public void advancedTest() {
-        AdvancedPlaceholderExtension<Entity> ext = manager.registerExtension("party");
+        BasePlaceholderModule<Entity> module = new BasePlaceholderModule<>("advanced");
+        module.register("today", PlaceholderResolver.typedDateTimeFormatter((p, ctx) -> p.format(LocalDateTime.now())));
+        module.register("balance", PlaceholderResolver.typedDecimalFormat((p, ctx) -> p.format(69.420)));
+        manager.register(module);
 
-        ext.addReplacer("today", DateTimeFormatter.class, (e, f) -> Component.text(f.format(LocalDateTime.now())));
-        ext.addReplacer("balance", DecimalFormat.class, (e, f) -> Component.text(f.format(69.420)));
 
-        Component msg = manager.replace(entity, "Test {party_today_yyyy-dd} xx!");
+        Component msg = manager.replace("Today is %advanced_today_yyyy-dd%!", PlaceholderResolveContext.of());
         String result = PlainTextComponentSerializer.plainText().serialize(msg);
-        assertEquals("Test " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-dd")) + " xx!", result);
+        assertEquals("Today is " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-dd")) + "!", result);
 
-        msg = manager.replace(entity, "Party {party_balance_000.0000}!");
+        msg = manager.replace("My balance is %advanced_balance_000.0000%!", PlaceholderResolveContext.of());
         result = PlainTextComponentSerializer.plainText().serialize(msg);
-        assertEquals("Party 069.4200!", result);
+        assertEquals("My balance is 069.4200!", result);
 
-        msg = manager.replace(entity, "Party {party_balance_#.#}!");
+        msg = manager.replace("My balance is %advanced_balance_#.#%!", PlaceholderResolveContext.of());
         result = PlainTextComponentSerializer.plainText().serialize(msg);
-        assertEquals("Party 69.4!", result);
+        assertEquals("My balance is 69.4!", result);
     }
 }

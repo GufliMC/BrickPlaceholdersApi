@@ -1,56 +1,95 @@
 package com.guflimc.brick.placeholders.api;
 
-import com.guflimc.brick.placeholders.api.extension.AdvancedPlaceholderExtension;
-import com.guflimc.brick.placeholders.api.extension.PlaceholderExtension;
+import com.guflimc.brick.placeholders.api.exception.ReplacementConversionException;
+import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
+import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-public interface PlaceholderManager<T> {
+public interface PlaceholderManager<E> {
 
     /**
-     * Replace placeholders in a component for the given entity.
+     * Replace placeholders.
+     * @param component to replace placeholders in
+     * @return the component with placeholders replaced
+     */
+    Component replace(@NotNull Component component, @NotNull PlaceholderResolveContext<E> context);
+
+    /**
+     * Replace placeholders with the given entity as context.
      * @param entity for whom to replace placeholders
      * @param component to replace placeholders in
      * @return the component with placeholders replaced
      */
-    Component replace(@NotNull T entity, @NotNull Component component);
+    default Component replace(@NotNull Component component, @NotNull E entity) {
+        return replace(component, PlaceholderResolveContext.of(entity));
+    }
 
     /**
-     * Replace placeholders in a string for the given player.
+     * Replace placeholders.
+     * @param text to replace placeholders in
+     * @return the component with placeholders replaced
+     */
+    Component replace(@NotNull String text, @NotNull PlaceholderResolveContext<E> context);
+
+    /**
+     * Replace placeholders with the given entity as context.
      * @param entity for whom to replace placeholders
      * @param text to replace placeholders in
      * @return the component with placeholders replaced
      */
-    Component replace(@NotNull T entity, @NotNull String text);
+    default Component replace(@NotNull String text, @NotNull E entity) {
+        return replace(text, PlaceholderResolveContext.of(entity));
+    }
+
+    //
 
     /**
-     * Return the replaced component for the given placeholder.
+     * Resolve the placeholder replacement for the given context.
+     * @return the replacement.
+     */
+    Object resolve(@NotNull String placeholder, @NotNull PlaceholderResolveContext<E> context);
+
+    /**
+     * Resolve the placeholder replacement for the given context. This will try to convert the replacement to the given type.
+     * @return the replacement.
+     */
+    <R> R resolve(@NotNull String placeholder, @NotNull PlaceholderResolveContext<E> context, @NotNull Class<R> type)
+            throws ReplacementConversionException;
+
+    /**
+     * Resolve the placeholder replacement for the given entity as context.
      * @param entity for whom to replace placeholders.
-     * @param placeholder the full name of the placeholder to replace.
-     * @return the component that matches the given placeholder.
+     * @param placeholder the placeholder to replace
+     * @return the replacement.
      */
-    Component replacement(@NotNull T entity, @NotNull String placeholder);
+    default Object resolve(@NotNull String placeholder, @NotNull E entity) {
+        return resolve(placeholder, PlaceholderResolveContext.of(entity));
+    }
 
     /**
-     * Register an extension that provides placeholders.
-     *
-     * @param extension the extension to register
+     * Resolve the placeholder replacement for the given entity as context. This will try to convert the replacement to the given type.
+     * @param entity for whom to replace placeholders.
+     * @param placeholder the placeholder to replace
+     * @return the replacement.
      */
-    void registerExtension(@NotNull PlaceholderExtension<T> extension);
+    default <R> R resolve(@NotNull String placeholder, @NotNull E entity, @NotNull Class<R> type)
+            throws ReplacementConversionException {
+        return resolve(placeholder, PlaceholderResolveContext.of(entity), type);
+    }
+
+    //
 
     /**
-     * Register an extension that provides placeholders.
-     * The extension will be of the {@link AdvancedPlaceholderExtension} type and will be created by this manager.
-     *
-     * @param id the id of the extension
-     * @return the extension that was created
+     * Register a module that provides placeholders.
+     * @param module the module to register
      */
-    AdvancedPlaceholderExtension<T> registerExtension(@NotNull String id);
+    void register(@NotNull PlaceholderModule<E> module);
 
     /**
-     * Unregister a placeholder extension
-     * @param id the id of the extension to unregister.
+     * Unregister a placeholder module
+     * @param module the module to unregister.
      */
-    void unregisterExtension(@NotNull String id);
+    void unregister(@NotNull PlaceholderModule<E> module);
 
 }
