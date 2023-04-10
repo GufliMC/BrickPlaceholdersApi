@@ -1,11 +1,11 @@
 package com.guflimc.brick.placeholders.common.modules;
 
 import com.guflimc.brick.placeholders.api.PlaceholderManager;
-import com.guflimc.brick.placeholders.api.exception.ReplacementConversionException;
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
 import com.guflimc.brick.placeholders.api.parser.PlaceholderParser;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -77,8 +77,18 @@ public class OperatorPlaceholderModule<E> implements PlaceholderModule<E> {
     }
 
     private Component _map_component(Component resolved, Map<String, String> mappings, String fallback) {
-        // TODO
-        return null;
+        if ( resolved != null ) {
+            for (String key : mappings.keySet()) {
+                Component keyc = convert(key);
+                if (keyc.equals(resolved)) {
+                    return replace(convert(mappings.get(key)), resolved);
+                }
+            }
+        }
+        if ( fallback != null ) {
+            return replace(convert(fallback), resolved);
+        }
+        return resolved;
     }
 
     // if
@@ -118,13 +128,15 @@ public class OperatorPlaceholderModule<E> implements PlaceholderModule<E> {
     }
 
     private Component _if_present_component(Component resolved, String _then, String _else) {
-        // TODO
-        return null;
+        if ( resolved != null ) {
+            return replace(convert(_then), resolved);
+        }
+        return convert(_else);
     }
 
     // utils
 
-    private Component replace(@NotNull Component replacement, @NotNull Component original) {
+    private Component replace(@NotNull Component replacement, Component original) {
         return replacement.replaceText(builder -> builder.match(Pattern.quote("{}"))
                 .replacement((mr, tb) -> original));
     }
@@ -133,4 +145,7 @@ public class OperatorPlaceholderModule<E> implements PlaceholderModule<E> {
         return replacement.replace("{}", original);
     }
 
+    private Component convert(@NotNull String str) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(str);
+    }
 }

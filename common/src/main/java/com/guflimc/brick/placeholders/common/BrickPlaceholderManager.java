@@ -7,6 +7,7 @@ import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
 import com.guflimc.brick.placeholders.common.modules.OperatorPlaceholderModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +103,8 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
         }
 
         if (type.isAssignableFrom(Component.class)) {
-            return type.cast(Component.text(replacement.toString()));
+            Component result = LegacyComponentSerializer.legacySection().deserializeOrNull(replacement.toString());
+            return type.cast(result);
         }
         if (type.isAssignableFrom(String.class)) {
             return type.cast(replacement.toString());

@@ -1,12 +1,13 @@
 
 dependencies {
     implementation project(":api")
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.+'
 
     compileOnly 'org.slf4j:slf4j-api:1.7.36'
 
     testImplementation 'org.jetbrains:annotations:23.0.0'
     testImplementation 'net.kyori:adventure-api:4.10.1'
-    testImplementation 'net.kyori:adventure-text-serializer-plain:4.10.1'
+    testImplementation 'net.kyori:adventure-text-serializer-plain:4.+'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testImplementation 'org.slf4j:slf4j-api:1.7.36'
 }
