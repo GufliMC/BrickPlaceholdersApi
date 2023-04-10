@@ -11,13 +11,12 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BrickPlaceholderTests {
+public class BasePlaceholderTests {
 
     private static Entity entity;
     private static PlaceholderManager<Entity> manager;
@@ -25,7 +24,7 @@ public class BrickPlaceholderTests {
     @BeforeAll
     public static void init() {
         manager = new BrickPlaceholderManager<>();
-        entity = new Entity("Berta");
+        entity = new Entity("Eric");
     }
 
     @Test
@@ -36,7 +35,7 @@ public class BrickPlaceholderTests {
 
         Component msg = manager.replace("Hello %entity_name%!", entity);
         String result = PlainTextComponentSerializer.plainText().serialize(msg);
-        assertEquals("Hello Berta!", result);
+        assertEquals("Hello Eric!", result);
     }
 
     @Test

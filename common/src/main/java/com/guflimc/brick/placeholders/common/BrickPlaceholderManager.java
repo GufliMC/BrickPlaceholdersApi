@@ -4,6 +4,7 @@ import com.guflimc.brick.placeholders.api.PlaceholderManager;
 import com.guflimc.brick.placeholders.api.exception.ReplacementConversionException;
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
+import com.guflimc.brick.placeholders.common.modules.OperatorPlaceholderModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
@@ -23,12 +24,15 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
 
     private final static Pattern PATTERN = Pattern.compile("(%[^%]+%)");
 
-    private final TreeSet<PlaceholderModule<E>> modules;
+    protected final TreeSet<PlaceholderModule<E>> modules;
     private final List<PlaceholderModule<E>> delegates = new CopyOnWriteArrayList<>();
 
     public BrickPlaceholderManager() {
         modules = new TreeSet<>(Comparator.<PlaceholderModule<E>>comparingInt(m -> m.name().length()).reversed()
                 .thenComparing(PlaceholderModule::name));
+
+        // default modules
+        register(new OperatorPlaceholderModule<>(this));
     }
 
     //
