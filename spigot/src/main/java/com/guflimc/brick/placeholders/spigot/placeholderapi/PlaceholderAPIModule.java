@@ -16,7 +16,11 @@ public class PlaceholderAPIModule implements PlaceholderModule<Player> {
 
     @Override
     public Object resolve(@NotNull String placeholder, @NotNull PlaceholderResolveContext<Player> context) {
-        return LegacyComponentSerializer.legacySection()
-                .deserializeOrNull(PlaceholderAPI.setPlaceholders(context.entity(), "%" + placeholder + "%"));
+        String result = "%" + placeholder + "%";
+        if (context.entity() != null && context.viewer() != null) {
+            result = PlaceholderAPI.setRelationalPlaceholders(context.entity(), context.viewer(), result);
+        }
+        result = PlaceholderAPI.setPlaceholders(context.entity(), result);
+        return LegacyComponentSerializer.legacySection().deserializeOrNull(result);
     }
 }

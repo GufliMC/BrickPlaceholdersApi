@@ -39,6 +39,11 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         return plugin.getDescription().getVersion();
     }
 
+    @Override
+    public boolean persist() {
+        return true;
+    }
+
     //
 
     @Override
