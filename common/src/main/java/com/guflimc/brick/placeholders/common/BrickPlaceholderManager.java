@@ -1,13 +1,15 @@
 package com.guflimc.brick.placeholders.common;
 
+import com.guflimc.brick.placeholders.api.Converters;
 import com.guflimc.brick.placeholders.api.PlaceholderManager;
-import com.guflimc.brick.placeholders.api.exception.ReplacementConversionException;
+import com.guflimc.brick.placeholders.api.exception.TypeConversionException;
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
-import com.guflimc.brick.placeholders.common.modules.OperatorPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorIfPresentPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapRangePlaceholderModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +34,9 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
         modules = new TreeSet<>(Comparator.<PlaceholderModule<E>>comparingInt(m -> m.name().length()).reversed()
                 .thenComparing(PlaceholderModule::name));
 
-        // default modules
-        register(new OperatorPlaceholderModule<>(this));
+        register(new OperatorIfPresentPlaceholderModule<>(this));
+        register(new OperatorMapPlaceholderModule<>(this));
+        register(new OperatorMapRangePlaceholderModule<>(this));
     }
 
     //
@@ -53,10 +56,10 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
         String placeholder = group.substring(1, group.length() - 1); // remove surrounding brackets
         try {
             Component replacement = resolve(placeholder, context, Component.class);
-            if ( replacement != null ) {
+            if (replacement != null) {
                 return replacement;
             }
-        } catch (ReplacementConversionException ex) {
+        } catch (TypeConversionException ex) {
             LOGGER.error(ex.getMessage());
         }
         return Component.text(group);
@@ -66,7 +69,7 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
 
     @Override
     public Object resolve(@NotNull String placeholder, @NotNull PlaceholderResolveContext<E> context) {
-        for ( PlaceholderModule<E> module : modules ) {
+        for (PlaceholderModule<E> module : modules) {
             if (!placeholder.startsWith(module.name())) {
                 continue;
             }
@@ -92,57 +95,34 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
     }
 
     @Override
-    public <R> R resolve(@NotNull String placeholder, @NotNull PlaceholderResolveContext<E> context, @NotNull Class<R> type) throws ReplacementConversionException {
+    public <R> R resolve(@NotNull String placeholder, @NotNull PlaceholderResolveContext<E> context, @NotNull Class<R> type) throws TypeConversionException {
         Object replacement = resolve(placeholder, context);
-        if (replacement == null) {
-            return null;
-        }
-
-        if (type.isInstance(replacement)) {
-            return type.cast(replacement);
-        }
-
-        if (type.isAssignableFrom(Component.class)) {
-            Component result = LegacyComponentSerializer.legacySection().deserializeOrNull(replacement.toString());
-            return type.cast(result);
-        }
-        if (type.isAssignableFrom(String.class)) {
-            return type.cast(replacement.toString());
-        }
-
         try {
-            return type.cast(replacement);
-        } catch (ClassCastException ignored) {
-            throw new ReplacementConversionException(placeholder, replacement, type);
+            return Converters.convert(replacement, type);
+        } catch (TypeConversionException ex) {
+            throw new TypeConversionException(String.format("Cannot convert result of placeholder '%s' to type %s",
+                    placeholder, type), ex);
         }
     }
 
     //
 
     @Override
-    public final void register(@NotNull PlaceholderModule<E> module) {
-        if (!module.name().matches("[a-z0-9]+")) {
-            throw new IllegalArgumentException("The module name may only contain lowercase letters and numbers.");
+    public void register(@NotNull PlaceholderModule<E> module) {
+        if (!module.name().matches("[a-z0-9_]+")) {
+            throw new IllegalArgumentException("The module name may only contain lowercase letters, numbers and underscores.");
         }
-        if (modules.stream().anyMatch(m -> module.name().equals(m.name())) ) {
+        if (modules.stream().anyMatch(m -> module.name().equals(m.name()))) {
             throw new IllegalArgumentException("A module with that name is already registered.");
         }
 
         modules.add(module);
-        onRegister(module);
     }
 
     @Override
-    public final void unregister(@NotNull PlaceholderModule<E> module) {
-        if ( !modules.remove(module) ) {
-            return;
-        }
-
-        onUnregister(module);
+    public void unregister(@NotNull PlaceholderModule<E> module) {
+        modules.remove(module);
     }
-
-    protected void onRegister(PlaceholderModule<E> module) {}
-    protected void onUnregister(PlaceholderModule<E> module) {}
 
     //
 

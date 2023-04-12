@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,13 +33,16 @@ public class SpigotBrickPlaceholderManager extends BrickPlaceholderManager<Playe
 
     // Internal Events
 
+
     @Override
-    protected void onRegister(PlaceholderModule<Player> module) {
+    public void register(@NotNull PlaceholderModule<Player> module) {
+        super.register(module);
         registerPlacehoderAPI(module);
     }
 
     @Override
-    protected void onUnregister(PlaceholderModule<Player> module) {
+    public void unregister(@NotNull PlaceholderModule<Player> module) {
+        super.unregister(module);
         unregisterPlacehoderAPI(module);
     }
 
@@ -62,7 +66,7 @@ public class SpigotBrickPlaceholderManager extends BrickPlaceholderManager<Playe
     // PlaceholderAPI
 
     private void registerPlacehoderAPI(PlaceholderModule<Player> module) {
-        if (!plugin.isPlaceholderAPI()) {
+        if ( plugin == null || !plugin.isPlaceholderAPI()) {
             return;
         }
 
@@ -72,7 +76,7 @@ public class SpigotBrickPlaceholderManager extends BrickPlaceholderManager<Playe
     }
 
     private void unregisterPlacehoderAPI(PlaceholderModule<Player> module) {
-        if (!plugin.isPlaceholderAPI()) {
+        if ( plugin == null || !plugin.isPlaceholderAPI()) {
             return;
         }
 

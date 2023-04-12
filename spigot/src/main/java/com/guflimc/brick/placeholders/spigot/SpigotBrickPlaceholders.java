@@ -2,6 +2,9 @@ package com.guflimc.brick.placeholders.spigot;
 
 import com.guflimc.brick.placeholders.api.module.BasePlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolver;
+import com.guflimc.brick.placeholders.common.modules.OperatorIfPresentPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapRangePlaceholderModule;
 import com.guflimc.brick.placeholders.spigot.api.SpigotPlaceholderAPI;
 import com.guflimc.brick.placeholders.spigot.placeholderapi.PlaceholderAPIModule;
 import org.bukkit.entity.Player;
