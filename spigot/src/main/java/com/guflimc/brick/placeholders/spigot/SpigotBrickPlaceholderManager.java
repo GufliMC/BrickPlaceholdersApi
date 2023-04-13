@@ -33,7 +33,6 @@ public class SpigotBrickPlaceholderManager extends BrickPlaceholderManager<Playe
 
     // Internal Events
 
-
     @Override
     public void register(@NotNull PlaceholderModule<Player> module) {
         super.register(module);

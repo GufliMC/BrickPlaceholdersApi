@@ -2,11 +2,9 @@ package com.guflimc.brick.placeholders.spigot;
 
 import com.guflimc.brick.placeholders.api.module.BasePlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolver;
-import com.guflimc.brick.placeholders.common.modules.OperatorIfPresentPlaceholderModule;
-import com.guflimc.brick.placeholders.common.modules.OperatorMapPlaceholderModule;
-import com.guflimc.brick.placeholders.common.modules.OperatorMapRangePlaceholderModule;
 import com.guflimc.brick.placeholders.spigot.api.SpigotPlaceholderAPI;
 import com.guflimc.brick.placeholders.spigot.placeholderapi.PlaceholderAPIModule;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,7 +46,7 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
     //
 
     public void placeholderapi() {
-        if ( !isPlaceholderAPI() ) {
+        if (!isPlaceholderAPI()) {
             return;
         }
 
@@ -59,6 +57,10 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
     }
 
     public void player() {
+        if (isPlaceholderAPI() && PlaceholderAPI.getRegisteredIdentifiers().contains("player")) {
+            return;
+        }
+
         BasePlaceholderModule<Player> module = new BasePlaceholderModule<>("player");
         module.register("name", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getName()));
         module.register("displayname", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getDisplayName()));
