@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class Converters {
 
-    private static record Key(Class<?> from, Class<?> to) {
+    private record Key(Class<?> from, Class<?> to) {
     }
 
     private static final Map<Key, Function<?, ?>> CONVERTERS = new HashMap<>();
@@ -25,7 +25,7 @@ public class Converters {
     static {
         // object -> ...
         register(Object.class, String.class, Object::toString);
-        register(Object.class, Component.class, o -> LegacyComponentSerializer.legacySection().deserialize(o.toString()));
+        register(Object.class, Component.class, o -> deserialize(o.toString()));
 
         // string -> ...
         register(String.class, String.class, s -> s);
@@ -157,4 +157,17 @@ public class Converters {
         return (Function<Object, T>) CONVERTERS.get(key);
     }
 
+    private final static LegacyComponentSerializer serializer = LegacyComponentSerializer.builder()
+            .character(LegacyComponentSerializer.SECTION_CHAR)
+            .hexColors()
+            .useUnusualXRepeatedCharacterHexFormat()
+            .build();
+
+    public static Component deserialize(String input) {
+        if (input == null) {
+            return null;
+        }
+
+        return serializer.deserialize(input);
+    }
 }

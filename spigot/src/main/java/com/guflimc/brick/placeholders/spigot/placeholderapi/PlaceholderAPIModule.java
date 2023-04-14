@@ -1,9 +1,9 @@
 package com.guflimc.brick.placeholders.spigot.placeholderapi;
 
+import com.guflimc.brick.placeholders.api.Converters;
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +21,7 @@ public class PlaceholderAPIModule implements PlaceholderModule<Player> {
             result = PlaceholderAPI.setRelationalPlaceholders(context.entity(), context.viewer(), result);
         }
         result = PlaceholderAPI.setPlaceholders(context.entity(), result);
-        return LegacyComponentSerializer.legacySection().deserializeOrNull(result);
+        return Converters.deserialize(result);
     }
+
 }

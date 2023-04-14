@@ -2,20 +2,29 @@ package com.guflimc.brick.placeholders.spigot;
 
 import com.guflimc.brick.placeholders.api.module.BasePlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolver;
+import com.guflimc.brick.placeholders.common.PlaceholderConfig;
+import com.guflimc.brick.placeholders.common.modules.OperatorIfPresentPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapRangePlaceholderModule;
 import com.guflimc.brick.placeholders.spigot.api.SpigotPlaceholderAPI;
 import com.guflimc.brick.placeholders.spigot.placeholderapi.PlaceholderAPIModule;
-import me.clip.placeholderapi.PlaceholderAPI;
+import com.guflimc.config.toml.TomlConfig;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpigotBrickPlaceholders extends JavaPlugin {
 
+    private PlaceholderConfig config;
     private SpigotBrickPlaceholderManager manager;
 
     @Override
     public void onEnable() {
         getLogger().info("Enabling " + nameAndVersion() + ".");
 
+        // config
+        config = TomlConfig.load(getDataFolder().toPath().resolve("config.toml"), new PlaceholderConfig());
+
+        // manager
         manager = new SpigotBrickPlaceholderManager(this);
         SpigotPlaceholderAPI.registerManager(manager);
 
@@ -23,7 +32,7 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
         placeholderapi();
 
         // built-in placeholder modules
-        player();
+        modules();
 
         getLogger().info("Enabled " + nameAndVersion() + ".");
     }
@@ -56,11 +65,21 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
         manager.addDelegate(new PlaceholderAPIModule());
     }
 
-    public void player() {
-        if (isPlaceholderAPI() && PlaceholderAPI.getRegisteredIdentifiers().contains("player")) {
+    public void modules() {
+        if (config.modules == null) {
             return;
         }
 
+        if (config.modules.player) {
+            player();
+        }
+
+        if (config.modules.operator) {
+            operator();
+        }
+    }
+
+    private void player() {
         BasePlaceholderModule<Player> module = new BasePlaceholderModule<>("player");
         module.register("name", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getName()));
         module.register("displayname", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().getDisplayName()));
@@ -75,6 +94,12 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
         module.register("is_invisible", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isInvisible()));
         module.register("is_invulnerable", PlaceholderResolver.requireEntity((p, ctx) -> ctx.entity().isInvulnerable()));
         manager.register(module);
+    }
+
+    private void operator() {
+        manager.register(new OperatorIfPresentPlaceholderModule<>(manager));
+        manager.register(new OperatorMapPlaceholderModule<>(manager));
+        manager.register(new OperatorMapRangePlaceholderModule<>(manager));
     }
 
 

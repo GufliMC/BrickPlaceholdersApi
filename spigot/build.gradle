@@ -21,6 +21,7 @@ dependencies {
     // shadow
     implementation 'net.kyori:adventure-api:4.+'
     implementation 'net.kyori:adventure-text-serializer-legacy:4.+'
+    implementation 'com.guflimc.config:toml:+'
 }
 
 
