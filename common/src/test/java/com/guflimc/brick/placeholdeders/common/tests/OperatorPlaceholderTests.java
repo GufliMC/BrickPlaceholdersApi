@@ -21,7 +21,8 @@ public class OperatorPlaceholderTests {
 
     @BeforeEach
     public void init() {
-        manager = new BrickPlaceholderManager<>();
+        BrickPlaceholderManager<Entity> manager = new BrickPlaceholderManager<>();
+        manager.withOperators();
 
         BasePlaceholderModule<Entity> module = new BasePlaceholderModule<>("entity");
         module.register("name", (placeholder, context) -> context.entity().name());
@@ -32,6 +33,8 @@ public class OperatorPlaceholderTests {
         module = new BasePlaceholderModule<>("fixed");
         module.register("", (placeholder, context) -> value);
         manager.register(module);
+
+        this.manager = manager;
     }
 
     @Test

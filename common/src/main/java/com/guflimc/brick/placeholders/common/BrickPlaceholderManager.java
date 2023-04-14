@@ -5,6 +5,9 @@ import com.guflimc.brick.placeholders.api.PlaceholderManager;
 import com.guflimc.brick.placeholders.api.exception.TypeConversionException;
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
+import com.guflimc.brick.placeholders.common.modules.OperatorIfPresentPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapPlaceholderModule;
+import com.guflimc.brick.placeholders.common.modules.OperatorMapRangePlaceholderModule;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +33,12 @@ public class BrickPlaceholderManager<E> implements PlaceholderManager<E> {
     public BrickPlaceholderManager() {
         modules = new TreeSet<>(Comparator.<PlaceholderModule<E>>comparingInt(m -> m.name().length()).reversed()
                 .thenComparing(PlaceholderModule::name));
+    }
+
+    public void withOperators() {
+        register(new OperatorIfPresentPlaceholderModule<>(this));
+        register(new OperatorMapPlaceholderModule<>(this));
+        register(new OperatorMapRangePlaceholderModule<>(this));
     }
 
     //

@@ -1,5 +1,7 @@
 package com.guflimc.brick.placeholders.spigot.placeholderapi;
 
+import com.guflimc.brick.placeholders.api.Converters;
+import com.guflimc.brick.placeholders.api.exception.TypeConversionException;
 import com.guflimc.brick.placeholders.api.module.PlaceholderModule;
 import com.guflimc.brick.placeholders.api.resolver.PlaceholderResolveContext;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -53,15 +55,10 @@ public class PlaceholderAPIExpansion extends PlaceholderExpansion {
         }
 
         Object replacement = module.resolve(params, PlaceholderResolveContext.of(player));
-        if (replacement == null) {
-            return null;
+        try {
+            return Converters.convert(replacement, String.class);
+        } catch (TypeConversionException ignored) {
+            return null; // should never happen
         }
-
-        if (replacement instanceof Component result) {
-            return LegacyComponentSerializer.legacySection()
-                    .serialize(result);
-        }
-
-        return replacement.toString();
     }
 }

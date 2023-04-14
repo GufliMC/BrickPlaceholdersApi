@@ -97,9 +97,7 @@ public class SpigotBrickPlaceholders extends JavaPlugin {
     }
 
     private void operator() {
-        manager.register(new OperatorIfPresentPlaceholderModule<>(manager));
-        manager.register(new OperatorMapPlaceholderModule<>(manager));
-        manager.register(new OperatorMapRangePlaceholderModule<>(manager));
+        manager.withOperators();
     }
 
 
