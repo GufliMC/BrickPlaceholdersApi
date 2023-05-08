@@ -1,5 +1,6 @@
 package com.guflimc.brick.placeholders.api;
 
+import com.guflimc.adventure.MixedLegacyComponentSerializer;
 import com.guflimc.brick.placeholders.api.exception.TypeConversionException;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -13,15 +14,11 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class Converters {
-
-    private final static LegacyComponentSerializer serializer = LegacyComponentSerializer.builder()
-            .character(LegacyComponentSerializer.SECTION_CHAR)
-            .hexColors()
-            .useUnusualXRepeatedCharacterHexFormat()
-            .build();
 
     private record Key(Class<?> from, Class<?> to) {
     }
@@ -61,7 +58,7 @@ public class Converters {
         register(String.class, char.class, s -> s.charAt(0));
 
         // component -> ...
-        register(Component.class, String.class, serializer::serialize);
+        register(Component.class, String.class, MixedLegacyComponentSerializer::serialize);
 
         // unboxed primitives -> boxed
         register(int.class, Integer.class, Integer::valueOf);
@@ -168,6 +165,6 @@ public class Converters {
             return null;
         }
 
-        return serializer.deserialize(input);
+        return MixedLegacyComponentSerializer.deserialize(input);
     }
 }
